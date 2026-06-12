@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="de">
+	<head>
+		<meta charset="utf-8">
+		<title> Inventarliste </title>
+		<link rel="stylesheet" href="../styles.css">
+	</head>
+	
+	<body>
+		<main>
+			<header>
+			<div class="kopf">
+				<h1> Homepage </h1>
+				<img src="../images/logo1.png" id="logo1" loading="lazy">
+			</div>
+		</header>
+			
+			<table id="editableTable" aria-label="Editierbare Tabelle">
+			<thead>
+				<tr>
+				<th class="row-num">#</th>
+				<th>Objekt</th>
+				<th>Anzahl</th>
+				<th>Lagerort</th>
+				<th>In Benutzung ?</th>
+				<th>Datum</th>
+				</tr>
+			</thead>
+			<tbody></tbody>
+			</table>
+
+		<script>
+		(function(){
+		  const COLS = 5;
+		  const STORAGE_KEY = 'editable_table_v1';
+		  const tbody = document.getElementById('editableTable').querySelector('tbody');
+
+		  function createRow(index, values = Array(COLS).fill('')) {
+			const tr = document.createElement('tr');
+			const th = document.createElement('th');
+			th.className = 'row-num';
+			th.textContent = index; // dezimale Nummerierung (1-basiert)
+			tr.appendChild(th);
+
+			for (let c=0;c<COLS;c++){
+			  const td = document.createElement('td');
+			  td.contentEditable = "true";
+			  td.dataset.col = c;
+			  td.textContent = values[c] || '';
+			  td.addEventListener('input', onCellInput);
+			  td.addEventListener('blur', scheduleCleanupAndSave);
+			  tr.appendChild(td);
+			}
+			return tr;
+		  }
+
+		  function onCellInput(e){
+			const tr = e.target.parentElement;
+			const rows = Array.from(tbody.rows);
+			const isLast = rows[rows.length-1] === tr;
+			if (isLast) appendEmptyRow();
+			saveToStorageDebounced();
+		  }
+
+		  function appendEmptyRow(){
+			const idx = tbody.rows.length + 1; // 1-basiert
+			tbody.appendChild(createRow(idx));
+		  }
+
+		  function rebuildRowNumbers(){
+			Array.from(tbody.rows).forEach((row, i) => {
+			  row.querySelector('.row-num').textContent = i + 1;
+			});
+		  }
+
+		  function serializeTable(){
+			return Array.from(tbody.rows).map(row => {
+			  return Array.from(row.querySelectorAll('td')).map(td => td.textContent);
+			});
+		  }
+
+		  function saveToStorage(){
+			try {
+			  const data = serializeTable();
+			  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+			} catch(e){
+			  console.error('Save failed', e);
+			}
+		  }
+
+		  // Debounce save to avoid too frequent writes
+		  let saveTimer = null;
+		  function saveToStorageDebounced(){
+			if (saveTimer) clearTimeout(saveTimer);
+			saveTimer = setTimeout(()=> { saveToStorage(); saveTimer = null; }, 200);
+		  }
+
+		  // Entfernt vollständig leere Zeilen (außer der letzten) und speichert
+		  function cleanupEmptyRows(){
+			const rows = Array.from(tbody.rows);
+			for (let i = rows.length - 2; i >= 0; i--) {
+			  const cells = Array.from(rows[i].querySelectorAll('td'));
+			  const allEmpty = cells.every(td => td.textContent.trim() === '');
+			  if (allEmpty) rows[i].remove();
+			}
+			rebuildRowNumbers();
+		  }
+
+		  function scheduleCleanupAndSave(){
+			setTimeout(()=> {
+			  cleanupEmptyRows();
+			  saveToStorage();
+			}, 50);
+		  }
+
+		  function loadFromStorage(){
+			try {
+			  const raw = localStorage.getItem(STORAGE_KEY);
+			  if (!raw) return false;
+			  const data = JSON.parse(raw);
+			  if (!Array.isArray(data)) return false;
+			  data.forEach((rowVals, i) => {
+				tbody.appendChild(createRow(i+1, rowVals));
+			  });
+			  return true;
+			} catch(e){
+			  console.error('Load failed', e);
+			  return false;
+			}
+		  }
+
+		  // Initialisierung
+		  const hadData = loadFromStorage();
+		  if (!hadData) {
+			appendEmptyRow();
+		  } else {
+			// Stelle sicher, dass die letzte Zeile leer ist
+			const last = tbody.rows[tbody.rows.length - 1];
+			const lastCells = Array.from(last.querySelectorAll('td'));
+			const lastEmpty = lastCells.every(td => td.textContent.trim() === '');
+			if (!lastEmpty) appendEmptyRow();
+		  }
+
+		  // Speichern auch vor dem Verlassen der Seite
+		  window.addEventListener('beforeunload', saveToStorage);
+
+		})();
+		</script>
+		
+		<footer>
+			<p style="font-size:12px">&copy; 2026 Manuel Bues</p>
+		</footer>
+		
+		<script src="../script.js"></script>
+		
+	</body>
+</html>
