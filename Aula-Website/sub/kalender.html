@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="de">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1" />
+		<title> AT SGL </title>
+		<link rel="stylesheet" href="styles-kal.css">
+	</head>
+	
+	<body>
+		<header>
+			<h1> Aulatechnik Veranstaltungen </h1>
+		</header>
+		
+		<main>
+			
+			<div id="calendar">
+			  <div class="header">
+				<button id="prevBtn">← Zurück</button>
+				<h2 id="monthYear"></h2>
+				<button id="nextBtn">Vorwärts →</button>
+			  </div>
+			  <div class="days" id="daysContainer"></div>
+			</div>
+
+			<div id="modal" class="modal">
+			  <div class="modal-content">
+				<h3>Ereignisse für <span id="modalDate"></span></h3>
+				<div id="eventsList"></div>
+				<input type="text" id="newEventInput" placeholder="Neues Ereignis eingeben">
+				<div class="modal-buttons">
+				  <button id="addModalEventBtn">Hinzufügen</button>
+				  <button id="closeModalBtn">Schließen</button>
+				</div>
+			  </div>
+			</div>
+
+		
+		</main>
+
+		<footer>
+			<p style="font-size:12px">&copy; 2026 Manuel Bues</p>
+		</footer>
+		
+		<script src="script-kal.js"></script>
+	
+	</body>
+</html>
