@@ -2,19 +2,45 @@
 <html lang="de">
 	<head>
 		<meta charset="utf-8">
-		<title> AT SGL </title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>AT SGL - Dateien</title>
 		<link rel="stylesheet" href="styles.css">
+		<link rel="stylesheet" href="styles-dateien.css">
 	</head>
 
 	<body>
+		<header>
+			<div class="kopf">
+				<h1> Dateien hochladen </h1>
+			</div>
+		</header>
+
 		<main>
-			<h2>Hauptinhalt</h2>
-			<p>Der wichtigste Content...</p>
+			<section class="dateien-section">
+				<h2 class="page-title">OneDrive-Dateien für aulatechnik@sgl.schule</h2>
+				<p class="info-text">Mit dieser Seite können Sie Dateien in das OneDrive-Konto <strong>aulatechnik@sgl.schule</strong> hochladen. Die Dateien werden im Ordner <strong>AulaDateien</strong> gespeichert. Nach dem Hochladen sehen Sie die Liste der verfügbaren Dateien und können diese direkt öffnen oder herunterladen.</p>
+
+				<div id="authStatus">Nicht angemeldet. Bitte mit aulatechnik@sgl.schule anmelden.</div>
+				<div class="action-row">
+					<button id="loginBtn" class="button">Mit Microsoft anmelden</button>
+					<button id="refreshBtn" class="button">Liste aktualisieren</button>
+				</div>
+
+				<form id="uploadForm" class="upload-group">
+					<input id="fileInput" type="file" aria-label="Datei auswählen" />
+					<button type="submit" class="button">Datei hochladen</button>
+				</form>
+
+				<div id="statusMessage">Status wird hier angezeigt.</div>
+				<div id="fileList"></div>
+			</section>
 		</main>
 
 		<footer>
 			<p style="font-size:12px">&copy; 2026 Manuel Bues</p>
 		</footer>
 
+		<script src="https://alcdn.msauth.net/browser/2.46.0/js/msal-browser.min.js"></script>
+		<script src="script-dateien.js"></script>
 	</body>
 </html>
