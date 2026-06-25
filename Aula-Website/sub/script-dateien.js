@@ -1,3 +1,5 @@
+console.log("script-dateien.js geladen");
+
 const msalConfig = {
   auth: {
     clientId: "YOUR_MICROSOFT_APP_CLIENT_ID",
@@ -16,7 +18,7 @@ const loginRequest = {
 };
 
 const graphFolderPath = "/AulaDateien";
-const msalInstance = new msal.PublicClientApplication(msalConfig);
+let msalInstance = null;
 
 const authStatus = document.getElementById("authStatus");
 const loginBtn = document.getElementById("loginBtn");
@@ -25,6 +27,27 @@ const uploadInput = document.getElementById("fileInput");
 const fileList = document.getElementById("fileList");
 const refreshBtn = document.getElementById("refreshBtn");
 const statusMessage = document.getElementById("statusMessage");
+
+function validateMsalConfig() {
+  if (!msalConfig.auth.clientId || msalConfig.auth.clientId === "YOUR_MICROSOFT_APP_CLIENT_ID") {
+    throw new Error("Bitte tragen Sie in script-dateien.js die gültige Azure AD App Client-ID ein.");
+  }
+}
+
+function initMsalInstance() {
+  if (msalInstance) {
+    return msalInstance;
+  }
+
+  validateMsalConfig();
+
+  if (typeof msal === "undefined" || !msal.PublicClientApplication) {
+    throw new Error("MSAL-Bibliothek wurde nicht geladen. Prüfen Sie die Internetverbindung oder hosten Sie die Seite über einen Webserver.");
+  }
+
+  msalInstance = new msal.PublicClientApplication(msalConfig);
+  return msalInstance;
+}
 
 function updateStatus(text, isError = false) {
   statusMessage.textContent = text;
@@ -45,13 +68,14 @@ function updateAuthInfo(account) {
 
 async function signIn() {
   try {
+    initMsalInstance();
     const loginResponse = await msalInstance.loginPopup(loginRequest);
     updateAuthInfo(loginResponse.account);
     updateStatus("Anmeldung erfolgreich. Lade Dateien...");
     await listFiles();
   } catch (error) {
     console.error(error);
-    updateStatus("Anmeldung fehlgeschlagen. Bitte Seite neu laden und erneut versuchen.", true);
+    updateStatus(`Anmeldung fehlgeschlagen: ${error.message || error}` , true);
   }
 }
 

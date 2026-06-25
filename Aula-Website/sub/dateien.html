@@ -40,7 +40,16 @@
 			<p style="font-size:12px">&copy; 2026 Manuel Bues</p>
 		</footer>
 
-		<script src="https://alcdn.msauth.net/browser/2.46.0/js/msal-browser.min.js"></script>
+		<script>
+			if (window.location.protocol === "file:") {
+				const status = document.getElementById("statusMessage");
+				if (status) {
+					status.textContent = "Die Seite wird lokal als Datei geöffnet. Bitte hosten Sie die Seite über HTTP/HTTPS (z.B. mit einem lokalen Webserver), damit Microsoft-Anmeldung funktioniert.";
+					status.style.color = "#c0392b";
+				}
+			}
+		</script>
+		<script src="https://alcdn.msauth.net/browser/2.46.0/js/msal-browser.min.js" onerror="document.getElementById('statusMessage').textContent='Die MSAL-Bibliothek konnte nicht geladen werden. Prüfen Sie die Internetverbindung.'; document.getElementById('statusMessage').style.color='#c0392b';"></script>
 		<script src="script-dateien.js"></script>
 	</body>
 </html>
