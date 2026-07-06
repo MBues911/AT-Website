@@ -13,6 +13,13 @@ h1,h2,h3,h4,h5,h6{
 	margin: auto;
 }
 
+#plakat-film {
+	display: block;
+	width: 300px;
+	height: auto;
+	margin: auto;
+}
+
 .kopf {
 	display: flex;
 }
@@ -22,6 +29,7 @@ h1,h2,h3,h4,h5,h6{
 	gap: 16px;
 	justify-content: center;
 	align-items: center;
+	text-align: center;
 }
 
 .verknuepfungen a {
@@ -36,6 +44,14 @@ h1,h2,h3,h4,h5,h6{
 
 .verknuepfungen a:hover {
 	background-color: #0056b3;
+}
+
+.aktuelles {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 32px;
+	
 }
 
 html, body {
