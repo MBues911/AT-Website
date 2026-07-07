@@ -1,0 +1,35 @@
+body {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+	font-family: "Times New Roman", system-ui, serif;
+	margin: 0;
+	background-color: #E8E8E8;
+}
+
+table {
+	border-collapse: collapse;
+	table-layout: auto;
+	width: 100%;
+	max-width: 100%;
+}
+
+th, td {
+	border: 1px solid #ccc;
+	padding: 6px 8px;
+	vertical-align: top;
+	white-space: nowrap;
+}
+
+
+td[contenteditable="true"] {
+	min-width: 80px;
+	outline: none;
+}
+
+.row-num {
+	background: #f6f6f6;
+	width: 2%;
+	white-space: nowrap;
+	text-align: center;
+}
